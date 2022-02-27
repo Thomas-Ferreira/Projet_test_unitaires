@@ -1,4 +1,5 @@
 import time
+from numpy import insert
 from selenium import webdriver 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
@@ -69,12 +70,11 @@ class Scrapper:
         return dictionary 
 
     def insert_BDD(self,dict):
-        try :
-            self.db.insert_many(dict('records'))
+            df = pd.DataFrame(dict)
+            self.db.insert_many(df.to_dict('records'))
             return True
-        except:
-            return False
-
+            
 #scrapper1 = Scrapper()
 #dict = scrapper1.navigate()
 #pprint(dict)
+#scrapper1.insert_BDD(dict)
