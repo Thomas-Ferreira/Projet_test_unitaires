@@ -6,66 +6,71 @@ import pandas as pd
 from pprint import pprint
 from pymongo import MongoClient
 
-chromeOptions = webdriver.ChromeOptions()
-s = Service(r'C:/Users/thoma/OneDrive/Bureau/chrome-driver/chromedriver.exe')
-browser = webdriver.Chrome(service=s)
+class Scrapper:
 
-browser.get('https://www.zalando.fr/')
-time.sleep(3)
+    client = MongoClient("mongodb+srv://user1:root@cluster0.iw7et.mongodb.net/ProjetTestUnitaires?retryWrites=true&w=majority")
+    collection = client.ProjetTestUnitaires
+    db = collection.TestUnit
 
-cookies = browser.find_element_by_xpath('//*[@id="uc-btn-accept-banner"]')
-cookies.click()
-time.sleep(2)
+    def navigate (self):
 
-homme = browser.find_element_by_xpath('//*[@id="z-navicat-header-root"]/header/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/nav/ul/li[2]/a')
-homme.click()
-time.sleep(1)
+        chromeOptions = webdriver.ChromeOptions()
+        s = Service(r'C:/Users/thoma/OneDrive/Bureau/chrome-driver/chromedriver.exe')
+        browser = webdriver.Chrome(service=s)
+        siteWeb = 'https://www.zalando.fr/'
 
-chaussures = browser.find_element_by_xpath('//*[@id="z-navicat-header-root"]/header/div[2]/div/div/div/div[1]/div/div/div/div[2]/div[2]/nav/ul/li[3]/span/a',)
-chaussures.click()
-time.sleep(2)
+        browser.get(siteWeb)
+        time.sleep(3)
 
-sneakers = browser.find_element_by_xpath("/html/body/div[4]/div/div/div/div[7]/div/div[1]/div/ul/li/ul/li[1]/a/span")
-sneakers.click()
-time.sleep(2)
+        cookies = browser.find_element_by_xpath('//*[@id="uc-btn-accept-banner"]')
+        cookies.click()
+        time.sleep(2)
 
-li_marque = []
-li_titre = []
-li_prix = []
+        homme = browser.find_element_by_xpath('//*[@id="z-navicat-header-root"]/header/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/nav/ul/li[2]/a')
+        homme.click()
+        time.sleep(1)
 
-for i in range (0,4):
-    articles = browser.find_elements_by_tag_name('article')
-    articles[i].click()
+        chaussures = browser.find_element_by_xpath('//*[@id="z-navicat-header-root"]/header/div[2]/div/div/div/div[1]/div/div/div/div[2]/div[2]/nav/ul/li[3]/span/a',)
+        chaussures.click()
+        time.sleep(2)
 
-    marque = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/div/a/span/h3")
-    #print(item.text)
+        sneakers = browser.find_element_by_xpath("/html/body/div[4]/div/div/div/div[7]/div/div[1]/div/ul/li/ul/li[1]/a/span")
+        sneakers.click()
+        time.sleep(2)
 
-    titre = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/h1/span")
-    #print(marque.text)
+        li_marque = []
+        li_titre = []
+        li_prix = []
 
-    prix = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/div/div/div/span")
-    #print(prix.text)
-    
-    li_marque.append(marque.text)
-    li_titre.append(titre.text)
-    li_prix.append(prix.text)
+        for i in range (0,4):
+            articles = browser.find_elements_by_tag_name('article')
+            articles[i].click()
 
-    browser.back()
-    time.sleep(2)
-    
-dictionary = {"marque": li_marque, "titre": li_titre,"prix":li_prix}
-df = pd.DataFrame(dictionary)
-    
-#pprint(df) 
+            marque = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/div/a/span/h3")
+            #print(item.text)
 
-browser.close() # fermer le navigateur
+            titre = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/h1/span")
+            #print(marque.text)
 
-client = MongoClient("mongodb+srv://user1:root@cluster0.iw7et.mongodb.net/ProjetTestUnitaires?retryWrites=true&w=majority")
-collection = client.ProjetTestUnitaires
-db = collection.TestUnit
+            prix = browser.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div/div[2]/x-wrapper-re-1-4/div/div/div/div/span")
+            #print(prix.text)
+            
+            li_marque.append(marque.text)
+            li_titre.append(titre.text)
+            li_prix.append(prix.text)
 
-#print(db)
-#dict_js = df.to_json()
-#print(dict_js)
+            browser.back()
+            time.sleep(2)
+            
+        dictionary = {"marque": li_marque, "titre": li_titre,"prix":li_prix}
+        #df = pd.DataFrame(dictionary)
+        browser.close() # fermer le navigateur
 
-db.insert_many(df.to_dict('records'))
+        return dictionary 
+
+    def insert_BDD(self,dict):
+        self.db.insert_many(dict('records'))
+
+#scrapper1 = Scrapper()
+#dict = scrapper1.navigate()
+#pprint(dict)
