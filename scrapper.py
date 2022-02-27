@@ -70,10 +70,13 @@ class Scrapper:
         return dictionary 
 
     def insert_BDD(self,dict):
+        try:
             df = pd.DataFrame(dict)
             self.db.insert_many(df.to_dict('records'))
             return True
-            
+        except:
+            return False
+
 #scrapper1 = Scrapper()
 #dict = scrapper1.navigate()
 #pprint(dict)

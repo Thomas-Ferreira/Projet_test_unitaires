@@ -17,7 +17,7 @@ class TestScrapperMethods(unittest.TestCase):
        self.assertIsInstance(self.test_dict, dict)
     
     def test_insert_BDD(self):
-        insert = self.scrapper_1.insert_BDD(self.dictionary)
+        insert = self.scrapper_1.insert_BDD(self.test_dict)
         self.assertIs(insert, True)
 
 
