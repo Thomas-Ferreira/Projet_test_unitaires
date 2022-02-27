@@ -7,12 +7,19 @@ import requests
 
 class TestScrapperMethods(unittest.TestCase):
 
+    dictionary = {"marque": 'marque', "titre": 'titre',"prix":'prix'}
+
     def setUp(self):
         self.scrapper_1 = Scrapper()
         self.test_dict = self.scrapper_1.navigate()
 
     def test_navigate(self):
        self.assertIsInstance(self.test_dict, dict)
+    
+    def test_insert_BDD(self):
+        insert = self.scrapper_1.insert_BDD(self.dictionary)
+        self.assertIs(insert, True)
+
 
 class TestApiMethods(unittest.TestCase):
 

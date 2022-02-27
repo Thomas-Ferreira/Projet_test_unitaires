@@ -69,7 +69,11 @@ class Scrapper:
         return dictionary 
 
     def insert_BDD(self,dict):
-        self.db.insert_many(dict('records'))
+        try :
+            self.db.insert_many(dict('records'))
+            return True
+        except:
+            return False
 
 #scrapper1 = Scrapper()
 #dict = scrapper1.navigate()
